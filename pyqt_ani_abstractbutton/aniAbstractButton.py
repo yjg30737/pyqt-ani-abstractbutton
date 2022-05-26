@@ -14,25 +14,31 @@ class AniAbstractButton(QAbstractButton):
     def __initUi(self):
         self.setFixedSize(self.__size, self.__size)
         self.__animation = QPropertyAnimation(self, b"border")
-        self.__animation.valueChanged.connect(self.__initStyle)
+        self.__animation.valueChanged.connect(self._initStyle)
         self.__animation.setStartValue(0)
         max_border_width = self.__size//6
         self.__animation.setEndValue(max_border_width)
         self.__animation.setDuration(50)
-        self.__initStyle(self.__animation.startValue())
+        self._initStyle(self.__animation.startValue())
 
-    def __initStyle(self, border_width):
+    def _getStyle(self, border_width):
         padding = abs(border_width-self.__animation.endValue())
-        self.setStyleSheet(f'''
-                            QAbstractButton 
-                            {{
-                            border: {border_width}px solid #AAAAAA;
-                            background-color: #CCCCCC;
-                            background-clip: content;
-                            padding: {padding};
-                            }}
-                            '''
-                            )
+        return f'''
+            QAbstractButton 
+            {{
+            border: {border_width}px solid #AAAAAA;
+            background-color: #CCCCCC;
+            background-clip: content;
+            padding: {padding};
+            }}
+            QAbstractButton:checked
+            {{
+            background-color: #888888;
+            }}
+            '''
+
+    def _initStyle(self, border_width):
+        self.setStyleSheet(self._getStyle(border_width))
 
     def enterEvent(self, e):
         self.__animation.setDirection(QAbstractAnimation.Forward)
