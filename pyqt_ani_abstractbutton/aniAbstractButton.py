@@ -49,3 +49,8 @@ class AniAbstractButton(QAbstractButton):
         self.__animation.setDirection(QAbstractAnimation.Backward)
         self.__animation.start()
         return super().leaveEvent(e)
+
+    def event(self, e):
+        if e.type() == 17:
+            self._initStyle(self.__animation.startValue())
+        return super().event(e)
